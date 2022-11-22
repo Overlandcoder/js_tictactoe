@@ -27,12 +27,11 @@ const Display = (function() {
   const infoDiv = document.querySelector(".info");
   const notifyTurn = name => infoDiv.textContent = `${name}, it's your turn.`;
   const announceTie = () => infoDiv.textContent = "Tie game.";
+  const resetInfoDiv = () => infoDiv.classList.remove("win-text");
   const announceWinner = name => {
     infoDiv.textContent = `${name} has won!`;
     infoDiv.classList.add("win-text");
   }
-
-  const resetInfoDiv = () => infoDiv.classList.remove("win-text");
 
   function notifySymbols(p1Symbol, p2Symbol) {
     const symbolsDiv = document.querySelector(".symbols");
@@ -96,9 +95,15 @@ const Game = (function() {
   }
 
   function gameOver() {
-    if (gameWon()) Display.announceWinner(currentPlayer.name);
-    if (Gameboard.full()) Display.announceTie();
-    return gameWon() || Gameboard.full();
+    if (gameWon()) {
+      Display.announceWinner(currentPlayer.name);
+      return true;
+    }
+
+    if (Gameboard.full()) {
+      Display.announceTie();
+      return true;
+    }
   }
 
   playButton.addEventListener("click", play);
