@@ -1,9 +1,6 @@
 const Gameboard = (function() {
   let boardArray = [];
-
-  function full() {
-    return boardArray.length === 9 && allCellsFilled();
-  }
+  const  full = () => boardArray.length === 9 && allCellsFilled();
 
   function allCellsFilled() {
     for (i = 0; i <= 8; i++) {
@@ -33,25 +30,39 @@ Array.prototype.random = function () {
 
 const Display = (function() {
   const infoDiv = document.querySelector(".info");
+  const nameForm = document.querySelector("#name-form");
+  let playerName = "";
 
-  function notifyTurn(name) {
-    infoDiv.textContent = `${name}, it's your turn.`;
+  const notifyTurn = name => infoDiv.textContent = `${name}, it's your turn.`;
+  const announceWinner = name => infoDiv.textContent = `${name} has won!`;
+  const announceTie = () => infoDiv.textContent = "Tie game.";
+
+  function getName(playerNum) {
+    addLabelText(playerNum);
+    const chooseButton = document.querySelector(".name-button");
+    chooseButton.addEventListener("click", customSubmit);
+    return playerName;
   }
 
-  function announceWinner(name) {
-    infoDiv.textContent = `${name} has won!`;
+  const showForm = () => nameForm.classList.remove("hidden");
+  const hideForm = () => nameForm.classList.add("hidden");
+
+  function addLabelText(playerNum) {
+    const nameLabel = document.getElementById("name-label");
+    nameLabel.textContent = `Player ${playerNum} name:`;
   }
 
-  function announceTie() {
-    infoDiv.textContent = "Tie game.";
+  function customSubmit(event) {
+    event.preventDefault();
+    playerName = document.getElementById("player-name").value;
   }
 
-  return { notifyTurn, announceWinner, announceTie };
+  return { notifyTurn, announceWinner, announceTie, getName, showForm, hideForm };
 })();
 
 const Game = (function() {
-  const player1 = Player("Player1");
-  const player2 = Player("Player2");
+  const player1 = Player();
+  const player2 = Player();
   player1.symbol = ["X", "O"].random();
   player2.symbol = player1.symbol === "X" ? "O" : "X";
   let currentPlayer = player1;
@@ -75,6 +86,14 @@ const Game = (function() {
     }))
 
     cells.forEach(cell => cell.style.cursor = "pointer");
+    getNames();
+  }
+
+  function getNames() {
+    Display.showForm();
+    player1.name = Display.getName(1);
+    console.log(player1.name);
+    player2.name = Display.getName(2);
   }
 
   function disableCell(cell) {
@@ -82,24 +101,16 @@ const Game = (function() {
     cell.style.cursor = "auto";
   }
 
-  function disableAllCells() {
-    cells.forEach(cell => disableCell(cell));
-  }
-
-  function switchTurn() {
-    return currentPlayer == player1 ? player2 : player1;
-  }
-
-  function checkWinner() {
-    return winningCombos.some(combo => allSameSymbol(combo));
-  }
-
+  const disableAllCells = () => cells.forEach(cell => disableCell(cell));
+  const switchTurn = () => currentPlayer == player1 ? player2 : player1;
+  const gameWon = () => winningCombos.some(combo => allSameSymbol(combo));
+  
   function allSameSymbol(combo) {
     return combo.every(i => Gameboard.boardArray[i] == currentPlayer.symbol);
   }
 
   function gameOver() {
-    if (checkWinner()) {
+    if (gameWon()) {
       Display.announceWinner(currentPlayer.name);
       return true;
     }
