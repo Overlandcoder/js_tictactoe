@@ -73,6 +73,8 @@ const Game = (function() {
       currentPlayer = switchTurn();
       Display.notifyTurn(currentPlayer.name);
     }))
+
+    cells.forEach(cell => cell.style.cursor = "pointer");
   }
 
   function disableCell(cell) {

@@ -23,14 +23,20 @@
 
 .cell:hover {
   background-color: rgb(202, 243, 98);
-  cursor: pointer;
 }
 
 .info {
   font-size: 25px;
 }
 
-button {
-  padding: 10px;
+.play {
+  padding: 10px 20px;
   cursor: pointer;
+  background-color: rgb(171, 237, 255);
+  border-radius: 5px;
+  border: none;
+}
+
+.play:hover {
+  background-color: rgb(215, 246, 255);
 }
