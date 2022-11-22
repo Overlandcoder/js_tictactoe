@@ -2,10 +2,6 @@ const Gameboard = (function() {
   let boardArray = [];
   const full = () => boardArray.length === 9 && allCellsFilled();
   const clearBoard = () => boardArray.splice(0, boardArray.length);
-  const cells = document.querySelectorAll(".cell");
-  cells.forEach(cell => cell.addEventListener("click", () => Game.playRound(cell)));
-  const clearButtons = () => cells.forEach(cell => cell.textContent = "");
-  const enableCells = () => cells.forEach(cell => cell.disabled = false);
 
   function allCellsFilled() {
     for (i = 0; i <= 8; i++) {
@@ -14,7 +10,7 @@ const Gameboard = (function() {
     return true;
   }
 
-  return { boardArray, full, clearBoard, clearButtons, enableCells };
+  return { boardArray, full, clearBoard };
 })();
 
 const Player = (name, symbol) => {
@@ -30,6 +26,12 @@ const Display = (function() {
   const notifyTurn = name => infoDiv.textContent = `${name}, it's your turn.`;
   const announceTie = () => infoDiv.textContent = "Tie game.";
   const resetInfoDiv = () => infoDiv.classList.remove("win-text");
+  const cells = document.querySelectorAll(".cell");
+  cells.forEach(cell => cell.addEventListener("click", () => Game.playRound(cell)));
+  const clearButtons = () => cells.forEach(cell => cell.textContent = "");
+  const enableCells = () => cells.forEach(cell => cell.disabled = false);
+  const disableAllCells = () => cells.forEach(cell => disableCell(cell));
+  
   const announceWinner = name => {
     infoDiv.textContent = `${name} has won!`;
     infoDiv.classList.add("win-text");
@@ -41,7 +43,13 @@ const Display = (function() {
                               Player 2 is ${p2Symbol}.`;
   }
 
-  return { notifyTurn, notifySymbols, announceWinner, announceTie, resetInfoDiv };
+  function disableCell(cell) {
+    cell.disabled = true;
+    cell.style.cursor = "auto";
+  }
+
+  return { notifyTurn, notifySymbols, announceWinner, announceTie, resetInfoDiv,
+           clearButtons, enableCells, disableAllCells, disableCell };
 })();
 
 const Game = (function() {
@@ -69,31 +77,23 @@ const Game = (function() {
   function resetState() {
     Gameboard.clearBoard();
     Display.resetInfoDiv();
-    Gameboard.clearButtons();
-    Gameboard.enableCells();
+    Display.clearButtons();
+    Display.enableCells();
   }
 
   function playRound(cell) {
     if (!playing) return;
     cell.textContent = currentPlayer.symbol;
     Gameboard.boardArray[cell.id] = cell.textContent;
-    disableCell(cell);
+    Display.disableCell(cell);
     if (gameOver()) {
-      disableAllCells();
+      Display.disableAllCells();
       return;
     }
     currentPlayer = switchTurn();
     Display.notifyTurn(currentPlayer.name);
   }
 
-
-
-  function disableCell(cell) {
-    cell.disabled = true;
-    cell.style.cursor = "auto";
-  }
-
-  const disableAllCells = () => cells.forEach(cell => disableCell(cell));
   const switchTurn = () => currentPlayer == player1 ? player2 : player1;
   const gameWon = () => winningCombos.some(combo => allSameSymbol(combo));
   
