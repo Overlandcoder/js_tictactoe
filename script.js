@@ -1,5 +1,5 @@
 const Gameboard = (function() {
-  let boardArray = ["x", "o", "x", "x", "x", "o", "x", "x", "o"];
+  let boardArray = ["x", "o", "x", "x"];
   return { boardArray };
 })();
 
@@ -15,3 +15,12 @@ const displaySymbols = (() => {
     cell.textContent = symbol;
   }
 })();
+
+Array.prototype.random = function () {
+  return this[Math.floor((Math.random()*this.length))];
+}
+
+const player1 = Player("Player1");
+const player2 = Player("Player2");
+player1.symbol = ["X", "O"].random();
+player2.symbol = player1.symbol === "X" ? "O" : "X";
