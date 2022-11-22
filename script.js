@@ -1,6 +1,18 @@
 const Gameboard = (function() {
   let boardArray = [];
-  return { boardArray };
+
+  function full() {
+    return boardArray.length === 9 && allCellsFilled();
+  }
+
+  function allCellsFilled() {
+    for (i = 0; i <= 8; i++) {
+      if (boardArray[i] == undefined) return false;
+    }
+    return true;
+  }
+
+  return { boardArray, full };
 })();
 
 const Player = (name, symbol) => {
@@ -30,7 +42,11 @@ const Display = (function() {
     infoDiv.textContent = `${name} has won!`;
   }
 
-  return { notifyTurn, announceWinner };
+  function announceTie() {
+    infoDiv.textContent = "Tie game.";
+  }
+
+  return { notifyTurn, announceWinner, announceTie };
 })();
 
 const Game = (function() {
@@ -82,6 +98,11 @@ const Game = (function() {
   function gameOver() {
     if (checkWinner()) {
       Display.announceWinner(currentPlayer.name);
+      return true;
+    }
+
+    if (Gameboard.full()) {
+      Display.announceTie();
       return true;
     }
   }
