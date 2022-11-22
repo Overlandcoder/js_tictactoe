@@ -7,7 +7,7 @@ const Gameboard = (function() {
 
   function allCellsFilled() {
     for (i = 0; i <= 8; i++) {
-      if (boardArray[i] == undefined) return false;
+      if (boardArray[i] === undefined) return false;
     }
     return true;
   }
@@ -96,11 +96,11 @@ const Game = (function() {
     Display.notifyTurn(currentPlayer.name);
   }
 
-  const switchTurn = () => currentPlayer == player1 ? player2 : player1;
+  const switchTurn = () => currentPlayer === player1 ? player2 : player1;
   const gameWon = () => winningCombos.some(combo => allSameSymbol(combo));
   
   function allSameSymbol(combo) {
-    return combo.every(i => Gameboard.symbolAt(i) == currentPlayer.symbol);
+    return combo.every(i => Gameboard.symbolAt(i) === currentPlayer.symbol);
   }
 
   function gameOver() {
