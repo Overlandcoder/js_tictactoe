@@ -1,0 +1,15 @@
+.container {
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: 150px 150px 150px;
+  grid-template-rows: 150px 150px 150px;
+}
+
+.cell {
+  border: 4px solid rgb(81, 81, 81);
+}
