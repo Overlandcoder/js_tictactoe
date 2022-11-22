@@ -53,8 +53,10 @@ const Game = (function() {
   const winningCombos = [[0, 1, 2], [3, 4, 5], [6, 7, 8],
                          [0, 3, 6], [1, 4, 7], [2, 5, 8],
                          [0, 4, 8], [2, 4, 6]];
+  let playing = false;
 
   function play() {
+    playing = true;
     Gameboard.clearBoard();
     Display.resetInfoDiv();
     clearButtons();
@@ -65,6 +67,7 @@ const Game = (function() {
   }
 
   function playRound(cell) {
+    if (!playing) return;
     cell.textContent = currentPlayer.symbol;
     Gameboard.boardArray[cell.id] = cell.textContent;
     disableCell(cell);
