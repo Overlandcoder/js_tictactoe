@@ -2,6 +2,8 @@ const Gameboard = (function() {
   let boardArray = [];
   const full = () => boardArray.length === 9 && allCellsFilled();
   const clearBoard = () => boardArray.splice(0, boardArray.length);
+  const cells = document.querySelectorAll(".cell");
+  cells.forEach(cell => cell.addEventListener("click", () => Game.playRound(cell)));
 
   function allCellsFilled() {
     for (i = 0; i <= 8; i++) {
@@ -24,8 +26,13 @@ Array.prototype.random = function () {
 const Display = (function() {
   const infoDiv = document.querySelector(".info");
   const notifyTurn = name => infoDiv.textContent = `${name}, it's your turn.`;
-  const announceWinner = name => infoDiv.textContent = `${name} has won!`;
   const announceTie = () => infoDiv.textContent = "Tie game.";
+  const announceWinner = name => {
+    infoDiv.textContent = `${name} has won!`;
+    infoDiv.classList.add("win-text");
+  }
+
+  const resetInfoDiv = () => infoDiv.classList.remove("win-text");
 
   function notifySymbols(p1Symbol, p2Symbol) {
     const symbolsDiv = document.querySelector(".symbols");
@@ -33,7 +40,7 @@ const Display = (function() {
                               Player 2 is ${p2Symbol}.`;
   }
 
-  return { notifyTurn, notifySymbols, announceWinner, announceTie };
+  return { notifyTurn, notifySymbols, announceWinner, announceTie, resetInfoDiv };
 })();
 
 const Game = (function() {
@@ -50,25 +57,24 @@ const Game = (function() {
 
   function play() {
     Gameboard.clearBoard();
+    Display.resetInfoDiv();
     clearButtons();
     enableCells();
     Display.notifySymbols(player1.symbol, player2.symbol);
     Display.notifyTurn(currentPlayer.name);
-
-    cells.forEach(cell => cell.addEventListener("click", () => {
-      cell.textContent = currentPlayer.symbol;
-      console.log(cell);
-      Gameboard.boardArray[cell.id] = cell.textContent;
-      disableCell(cell);
-      if (gameOver()) {
-        disableAllCells();
-        return;
-      }
-      currentPlayer = switchTurn();
-      Display.notifyTurn(currentPlayer.name);
-    }))
-
     cells.forEach(cell => cell.style.cursor = "pointer");
+  }
+
+  function playRound(cell) {
+    cell.textContent = currentPlayer.symbol;
+    Gameboard.boardArray[cell.id] = cell.textContent;
+    disableCell(cell);
+    if (gameOver()) {
+      disableAllCells();
+      return;
+    }
+    currentPlayer = switchTurn();
+    Display.notifyTurn(currentPlayer.name);
   }
 
   function enableCells() {
@@ -90,16 +96,11 @@ const Game = (function() {
   }
 
   function gameOver() {
-    if (gameWon()) {
-      Display.announceWinner(currentPlayer.name);
-      return true;
-    }
-
-    if (Gameboard.full()) {
-      Display.announceTie();
-      return true;
-    }
+    if (gameWon()) Display.announceWinner(currentPlayer.name);
+    if (Gameboard.full()) Display.announceTie();
+    return gameWon() || Gameboard.full();
   }
 
-  playButton.addEventListener("click", play)
+  playButton.addEventListener("click", play);
+  return { playRound };
 })();
