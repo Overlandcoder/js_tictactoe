@@ -30,13 +30,15 @@
 }
 
 .play {
-  padding: 10px 20px;
+  padding: 10px 40px;
   cursor: pointer;
-  background-color: rgb(171, 237, 255);
+  background-color: rgb(78, 189, 248);
   border-radius: 5px;
   border: none;
+  font-weight: bold;
+  color: #fff;
 }
 
 .play:hover {
-  background-color: rgb(215, 246, 255);
+  background-color: rgb(52, 164, 225);
 }
