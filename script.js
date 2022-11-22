@@ -47,7 +47,7 @@ const Game = (function() {
   const player2 = Player("Player 2");
   player1.symbol = ["X", "O"].random();
   player2.symbol = player1.symbol === "X" ? "O" : "X";
-  let currentPlayer = player1;
+  let currentPlayer;
   const cells = document.querySelectorAll(".cell");
   const playButton = document.querySelector(".play");
   const winningCombos = [[0, 1, 2], [3, 4, 5], [6, 7, 8],
@@ -57,6 +57,7 @@ const Game = (function() {
 
   function play() {
     playing = true;
+    currentPlayer = [player1, player2].random();
     Gameboard.clearBoard();
     Display.resetInfoDiv();
     clearButtons();
