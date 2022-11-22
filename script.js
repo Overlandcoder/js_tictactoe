@@ -3,7 +3,7 @@ const Gameboard = (function() {
   const full = () => boardArray.length === 9 && allCellsFilled();
   const clearBoard = () => boardArray.splice(0, boardArray.length);
   const markCell = (index, symbol) => boardArray[index] = symbol;
-  const valueAt = index => boardArray[index];
+  const symbolAt = index => boardArray[index];
 
   function allCellsFilled() {
     for (i = 0; i <= 8; i++) {
@@ -12,7 +12,7 @@ const Gameboard = (function() {
     return true;
   }
 
-  return { valueAt, markCell, full, clearBoard };
+  return { symbolAt, markCell, full, clearBoard };
 })();
 
 const Player = (name, symbol) => {
@@ -100,16 +100,14 @@ const Game = (function() {
   const gameWon = () => winningCombos.some(combo => allSameSymbol(combo));
   
   function allSameSymbol(combo) {
-    return combo.every(i => Gameboard.valueAt(i) == currentPlayer.symbol);
+    return combo.every(i => Gameboard.symbolAt(i) == currentPlayer.symbol);
   }
 
   function gameOver() {
     if (gameWon()) {
       Display.announceWinner(currentPlayer.name);
       return true;
-    }
-
-    if (Gameboard.full()) {
+    } else if (Gameboard.full()) {
       Display.announceTie();
       return true;
     }
