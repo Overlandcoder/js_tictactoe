@@ -33,6 +33,7 @@ const Display = (function() {
   const clearButtons = () => cells.forEach(cell => cell.textContent = "");
   const enableCells = () => cells.forEach(cell => cell.disabled = false);
   const disableAllCells = () => cells.forEach(cell => disableCell(cell));
+  const changeCursor = () => cells.forEach(cell => cell.style.cursor = "pointer");
 
   const announceWinner = name => {
     infoDiv.textContent = `${name} has won!`;
@@ -51,7 +52,7 @@ const Display = (function() {
   }
 
   return { notifyTurn, notifySymbols, announceWinner, announceTie, resetInfoDiv,
-           clearButtons, enableCells, disableAllCells, disableCell };
+           clearButtons, enableCells, disableAllCells, disableCell, changeCursor };
 })();
 
 const Game = (function() {
@@ -60,7 +61,6 @@ const Game = (function() {
   player1.symbol = ["X", "O"].random();
   player2.symbol = player1.symbol === "X" ? "O" : "X";
   let currentPlayer;
-  const cells = document.querySelectorAll(".cell");
   const playButton = document.querySelector(".play");
   const winningCombos = [[0, 1, 2], [3, 4, 5], [6, 7, 8],
                          [0, 3, 6], [1, 4, 7], [2, 5, 8],
@@ -73,7 +73,7 @@ const Game = (function() {
     resetState();
     Display.notifySymbols(player1.symbol, player2.symbol);
     Display.notifyTurn(currentPlayer.name);
-    cells.forEach(cell => cell.style.cursor = "pointer");
+    Display.changeCursor();
   }
 
   function resetState() {
