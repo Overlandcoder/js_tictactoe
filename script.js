@@ -48,11 +48,11 @@ const Game = (function() {
      cells.forEach(cell => cell.addEventListener("click", () => {
       cell.textContent = currentPlayer.symbol;
       Gameboard.boardArray[cell.id] = cell.textContent;
-      if (checkWinner()) {
-        Display.announceWinner(currentPlayer.name);
+      disableCell(cell);
+      if (gameOver()) {
+        disableAllCells();
         return;
       }
-      disableCell(cell);
       currentPlayer = switchTurn();
       Display.notifyTurn(currentPlayer.name);
     }))
@@ -61,6 +61,10 @@ const Game = (function() {
   function disableCell(cell) {
     cell.disabled = true;
     cell.style.cursor = "auto";
+  }
+
+  function disableAllCells() {
+    cells.forEach(cell => disableCell(cell));
   }
 
   function switchTurn() {
@@ -73,6 +77,13 @@ const Game = (function() {
 
   function allSameSymbol(combo) {
     return combo.every(i => Gameboard.boardArray[i] == currentPlayer.symbol);
+  }
+
+  function gameOver() {
+    if (checkWinner()) {
+      Display.announceWinner(currentPlayer.name);
+      return true;
+    }
   }
 
   return { play };
