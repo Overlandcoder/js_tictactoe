@@ -2,6 +2,8 @@ const Gameboard = (function() {
   let boardArray = [];
   const full = () => boardArray.length === 9 && allCellsFilled();
   const clearBoard = () => boardArray.splice(0, boardArray.length);
+  const markCell = (index, symbol) => boardArray[index] = symbol;
+  const valueAt = index => boardArray[index];
 
   function allCellsFilled() {
     for (i = 0; i <= 8; i++) {
@@ -10,7 +12,7 @@ const Gameboard = (function() {
     return true;
   }
 
-  return { boardArray, full, clearBoard };
+  return { valueAt, markCell, full, clearBoard };
 })();
 
 const Player = (name, symbol) => {
@@ -31,7 +33,7 @@ const Display = (function() {
   const clearButtons = () => cells.forEach(cell => cell.textContent = "");
   const enableCells = () => cells.forEach(cell => cell.disabled = false);
   const disableAllCells = () => cells.forEach(cell => disableCell(cell));
-  
+
   const announceWinner = name => {
     infoDiv.textContent = `${name} has won!`;
     infoDiv.classList.add("win-text");
@@ -84,7 +86,7 @@ const Game = (function() {
   function playRound(cell) {
     if (!playing) return;
     cell.textContent = currentPlayer.symbol;
-    Gameboard.boardArray[cell.id] = cell.textContent;
+    Gameboard.markCell(cell.id, cell.textContent);
     Display.disableCell(cell);
     if (gameOver()) {
       Display.disableAllCells();
@@ -98,7 +100,7 @@ const Game = (function() {
   const gameWon = () => winningCombos.some(combo => allSameSymbol(combo));
   
   function allSameSymbol(combo) {
-    return combo.every(i => Gameboard.boardArray[i] == currentPlayer.symbol);
+    return combo.every(i => Gameboard.valueAt(i) == currentPlayer.symbol);
   }
 
   function gameOver() {
