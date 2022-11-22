@@ -1,5 +1,5 @@
 const Gameboard = (function() {
-  let boardArray = ["x", "o", "x", "x"];
+  let boardArray = [];
   return { boardArray };
 })();
 
@@ -20,13 +20,17 @@ Array.prototype.random = function () {
 }
 
 const Display = (function() {
+  const infoDiv = document.querySelector(".info");
+
   function notifyTurn(name) {
-    const infoDiv = document.querySelector(".info");
-    console.log(name);
     infoDiv.textContent = `${name}, it's your turn.`;
   }
 
-  return { notifyTurn };
+  function announceWinner(name) {
+    infoDiv.textContent = `${name} has won!`;
+  }
+
+  return { notifyTurn, announceWinner };
 })();
 
 const Game = (function() {
@@ -36,23 +40,40 @@ const Game = (function() {
   player2.symbol = player1.symbol === "X" ? "O" : "X";
   let currentPlayer = player1;
   const cells = document.querySelectorAll(".cell");
+  const winningCombos = [[0, 1, 2], [3, 4, 5], [6, 7, 8],
+                            [0, 3, 6], [1, 4, 7], [2, 5, 8],
+                            [0, 4, 8], [2, 4, 6]];
 
   function play() {
-    let roundsPlayed = Gameboard.boardArray.length
-
-    // for (i = roundsPlayed; roundsPlayed <= 9; i++) {
+     cells.forEach(cell => cell.addEventListener("click", () => {
+      cell.textContent = currentPlayer.symbol;
+      Gameboard.boardArray[cell.id] = cell.textContent;
+      if (checkWinner()) {
+        Display.announceWinner(currentPlayer.name);
+        return;
+      }
+      disableCell(cell);
       currentPlayer = switchTurn();
       Display.notifyTurn(currentPlayer.name);
-    // }
+    }))
+  }
+
+  function disableCell(cell) {
+    cell.disabled = true;
+    cell.style.cursor = "auto";
   }
 
   function switchTurn() {
     return currentPlayer == player1 ? player2 : player1;
   }
 
-  cells.forEach(cell => cell.addEventListener("click", () => {
-    cell.textContent = currentPlayer.symbol;
-  }))
+  function checkWinner() {
+    return winningCombos.some(combo => allSameSymbol(combo));
+  }
+
+  function allSameSymbol(combo) {
+    return combo.every(i => Gameboard.boardArray[i] == currentPlayer.symbol);
+  }
 
   return { play };
 })();
