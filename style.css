@@ -42,3 +42,7 @@
 .play:hover {
   background-color: rgb(52, 164, 225);
 }
+
+.hidden {
+  display: none;
+}

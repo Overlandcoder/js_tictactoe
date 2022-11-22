@@ -10,6 +10,13 @@
 <body>
   <div class="container">
     <button class="play">New Game</button>
+    <form id="name-form" class="hidden">
+      <div>
+        <label for="player-name" id="name-label"></label>
+        <input type="text" id="player-name" name="player-name" required>
+        <button type="submit" class="name-button">Choose</button>
+      </div>
+    </form>
     <div class="board">
       <button class="cell" id="0"></button>
       <button class="cell" id="1"></button>
