@@ -4,6 +4,8 @@ const Gameboard = (function() {
   const clearBoard = () => boardArray.splice(0, boardArray.length);
   const cells = document.querySelectorAll(".cell");
   cells.forEach(cell => cell.addEventListener("click", () => Game.playRound(cell)));
+  const clearButtons = () => cells.forEach(cell => cell.textContent = "");
+  const enableCells = () => cells.forEach(cell => cell.disabled = false);
 
   function allCellsFilled() {
     for (i = 0; i <= 8; i++) {
@@ -12,7 +14,7 @@ const Gameboard = (function() {
     return true;
   }
 
-  return { boardArray, full, clearBoard };
+  return { boardArray, full, clearBoard, clearButtons, enableCells };
 })();
 
 const Player = (name, symbol) => {
@@ -58,13 +60,17 @@ const Game = (function() {
   function play() {
     playing = true;
     currentPlayer = [player1, player2].random();
-    Gameboard.clearBoard();
-    Display.resetInfoDiv();
-    clearButtons();
-    enableCells();
+    resetState();
     Display.notifySymbols(player1.symbol, player2.symbol);
     Display.notifyTurn(currentPlayer.name);
     cells.forEach(cell => cell.style.cursor = "pointer");
+  }
+
+  function resetState() {
+    Gameboard.clearBoard();
+    Display.resetInfoDiv();
+    Gameboard.clearButtons();
+    Gameboard.enableCells();
   }
 
   function playRound(cell) {
@@ -80,16 +86,13 @@ const Game = (function() {
     Display.notifyTurn(currentPlayer.name);
   }
 
-  function enableCells() {
-    cells.forEach(cell => cell.disabled = false);
-  }
+
 
   function disableCell(cell) {
     cell.disabled = true;
     cell.style.cursor = "auto";
   }
 
-  const clearButtons = () => cells.forEach(cell => cell.textContent = "");
   const disableAllCells = () => cells.forEach(cell => disableCell(cell));
   const switchTurn = () => currentPlayer == player1 ? player2 : player1;
   const gameWon = () => winningCombos.some(combo => allSameSymbol(combo));
