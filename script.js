@@ -20,8 +20,13 @@ Array.prototype.random = function () {
 }
 
 const Display = (function() {
-  const infoDiv = document.querySelector(".info");
-  infoDiv.textContent = "test";
+  function notifyTurn(name) {
+    const infoDiv = document.querySelector(".info");
+    console.log(name);
+    infoDiv.textContent = `${name}, it's your turn.`;
+  }
+
+  return { notifyTurn };
 })();
 
 const Game = (function() {
@@ -30,18 +35,24 @@ const Game = (function() {
   player1.symbol = ["X", "O"].random();
   player2.symbol = player1.symbol === "X" ? "O" : "X";
   let currentPlayer = player1;
+  const cells = document.querySelectorAll(".cell");
 
   function play() {
     let roundsPlayed = Gameboard.boardArray.length
 
-    for (i = roundsPlayed; roundsPlayed <= 9; i++) {
+    // for (i = roundsPlayed; roundsPlayed <= 9; i++) {
       currentPlayer = switchTurn();
-    }
+      Display.notifyTurn(currentPlayer.name);
+    // }
   }
 
   function switchTurn() {
     return currentPlayer == player1 ? player2 : player1;
   }
+
+  cells.forEach(cell => cell.addEventListener("click", () => {
+    cell.textContent = currentPlayer.symbol;
+  }))
 
   return { play };
 })();
