@@ -32,15 +32,17 @@
 .play {
   padding: 10px 40px;
   cursor: pointer;
-  background-color: rgb(78, 189, 248);
+  background-color: rgb(126, 167, 22);
   border-radius: 5px;
   border: none;
   font-weight: bold;
   color: #fff;
+  font-size: 20px;
+  width: 375px;
 }
 
 .play:hover {
-  background-color: rgb(52, 164, 225);
+  background-color: rgb(165, 205, 65);
 }
 
 .hidden {
